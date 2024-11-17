@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        html {
+            height: 100%;
+        }
+        body {
+            height: 100%;
+        }
+        .container {
+            height: 100%;
+            background-image: linear-gradient(to bottom, #fbc2eb, #a6c1ee, #225bbf);
+        }
+        .login-wrapper {
+            background-color: #ffffff;
+            width: 358px;
+            height: 588px;
+            border-radius: 15px;
+            padding: 0 50px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 1px 1px 10px #585353;
+            
+        }
+        
+        .header {
+            font-size: 38px;
+            font-weight: bold;
+            text-align: center;
+            line-height:200px;
+        }
+        .input-item {
+            display: block;
+            width: 100%;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 10px;
+            border-bottom: 1px solid rgb(128, 125, 125);
+            font-size: 15px;
+            outline: none;
+        }
+        .input-item:placeholder {
+            text-transform: uppercase;
+        }
+        .btn {
+            text-align: center;
+            padding: 10px;
+            width: 100%;
+            margin-top: 40px;
+            background-image: linear-gradient(to right, #a6c1ee, #fbc2eb);
+            color: #fff;
+        }
+        .msg {
+            text-align: center;
+            line-height: 88px;
+        }
+        a {
+            text-decoration-line: none;
+            color: #abc1ee;
+            cursor: pointer;
+        }
+        .flip-img {
+            top: 0%;
+            left:65%;
+            transform:rotateY(180deg);
+        }
+        img{
+            position: absolute;
+            top: 0%;
+            left:20%;
+            transition: all 0.5s;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-wrapper">
+            
+            <div class="header">Login</div>
+            <div class="form-wrapper">
+                <input type="text" name="username" placeholder="username" class="input-item">
+                <img src="racket.png" alt="racket"><img src="racket.png" class="flip-img" alt="racket">
+                <input type="password" name="password" placeholder="password" class="input-item">
+                <a href="#"><div class="btn">Login</div></a>
+            </div>
+            <div class="msg">
+                Don't have account?
+                <a href="#">Sign up</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script src="racket-rotate.js"></script>
+    <script>
+        const name=document.querySelector("input[name=username]")
+        const password=document.querySelector("input[name=password]")
+        function save()
+        {
+            var data=new Object();
+            data.name=name.value;
+            data.password=password.value;
+            data.sign_time=new Date().toLocaleString();
+            localStorage.setItem("user_data",JSON.stringify(data))
+        }
+        btn.addEventListener("click",()=>{
+            if(name.value=="")
+        {
+            alert("请输入用户名")
+        }
+        else if(password.value=="")
+        {
+            alert("请输入密码")
+        }
+        else{
+            save();
+            var user_str=localStorage.getItem("user_data");
+            var user_data=JSON.parse(user_str);
+            if(user_data.name==name.value&&user_data.password==password.value)
+        {
+            alert(user_data.name+" "+user_data.password)
+            alert("登录成功")
+        }
+        else{
+            alert("用户名或密码错误")
+        }
+        }
+        })
+        
+    </script>
+</html>

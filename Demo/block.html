@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>俄罗斯方块</title>
+</head>
+<body>
+<canvas id="myCanvas" width="300" height="600" style="border:1px solid #000000;"></canvas>
+
+<script>
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+var board = [];
+var boardWidth = 10;
+var boardHeight = 20;
+var blockSize = 30;
+var curPiece;
+var curX = 3;
+var curY = 0;
+var score = 0;
+
+// 初始化游戏板
+function initBoard() {
+    for (var y = 0; y < boardHeight; y++) {
+        board[y] = [];
+        for (var x = 0; x < boardWidth; x++) {
+            board[y][x] = 0;
+        }
+    }
+}
+
+// 绘制方块
+function drawSquare(x, y, color) {
+    ctx.fillStyle = color;
+    ctx.fillRect(x * blockSize, y * blockSize, blockSize, blockSize);
+    ctx.strokeRect(x * blockSize, y * blockSize, blockSize, blockSize);
+}
+
+// 绘制游戏板
+function drawBoard() {
+    for (var y = 0; y < boardHeight; y++) {
+        for (var x = 0; x < boardWidth; x++) {
+            drawSquare(x, y, board[y][x]);
+        }
+    }
+}
+
+// 方块形状
+var shapes = [
+    [1, 1, 1, 1],
+    [1, 1, 1, 0, 1],
+    [1, 1, 1, 0, 0, 0, 1],
+    [1, 1, 0, 0, 1, 1],
+    [1, 1, 0, 1, 1],
+    [0, 1, 1, 0, 1, 1],
+    [0, 1, 0, 1, 1, 1]
+];
+
+// 随机生成新的方块
+function newPiece() {
+    var id = Math.floor(Math.random() * shapes.length);
+    curPiece = [];
+    for (var y = 0; y < 4; y++) {
+        curPiece[y] = [];
+        for (var x = 0; x < 4; x++) {
+            var i = 4 * y + x;
+            if (typeof shapes[id][i] != 'undefined' && shapes[id][i]) {
+                curPiece[y][x] = id + 1;
+            } else {
+                curPiece[y][x] = 0;
+            }
+        }
+    }
+    curX = 3;
+    curY = 0;
+}
+
+// 绘制当前方块
+function drawPiece() {
+    for (var y = 0; y < 4; y++) {
+        for (var x = 0; x < 4; x++) {
+            if (curPiece[y][x]) {
+                drawSquare(curX + x, curY + y, curPiece[y][x]);
+            }
+        }
+    }
+}
+
+// 检查移动是否合法
+function check() {
+    for (var y = 0; y < 4; y++) {
+        for (var x = 0; x < 4; x++) {
+            if (curPiece[y][x] && (board[curY + y] && board[curY + y][curX + x])) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+// 固定方块到游戏板
+function fixToBoard() {
+    for (var y = 0; y < 4; y++) {
+        for (var x = 0; x < 4; x++) {
+            if (curPiece[y][x]) {
+                board[curY + y][curX + x] = curPiece[y][x];
+            }
+        }
+    }
+}
+
+// 清除行
+function clearLines() {
+    for (var y = boardHeight - 1; y >= 0; y--) {
+        var line = true;
+        for (var x = 0; x < boardWidth; x++) {
+            line = line && (board[y][x] != 0);
+        }
+        if (line) {
+            for (var yy = y; yy > 0; yy--) {
+                for (var x = 0; x < boardWidth; x++) {
+                    board[yy][x] = board[yy - 1][x];
+                }
+            }
+            for (var x = 0; x < boardWidth; x++) {
+            board[0][x] = 0;
+        }
+    }
+}}
+
+// 游戏主循环
+function gameLoop() {
+    if (check()) {
+        curY++;
+    } else {
+        fixToBoard();
+        clearLines();
+        newPiece();
+        if (!check()) {
+            alert("Game Over");
+            clearInterval(interval);
+            return;
+        }
+    }
+    drawBoard();
+    drawPiece();
+}
+
+// 初始化游戏
+initBoard();
+newPiece();
+var interval = setInterval(gameLoop, 250);
+
+// 键盘控制
+document.addEventListener("keydown", function (e) {
+    if (e.keyCode == 37) { // left arrow
+        curX--;
+        if (!check()) curX++;
+    } else if (e.keyCode == 39) { // right arrow
+        curX++;
+        if (!check()) curX--;
+    } else if (e.keyCode == 40) { // down arrow
+        curY++;
+        if (!check()) {
+            curY--;
+            fixToBoard();
+            clearLines();
+            newPiece();
+        }
+    } else if (e.keyCode == 38) { // up arrow
+        // Rotate the piece (not implemented in this example)
+    }
+});
+</script>
+</body>
+</html>
